@@ -1,0 +1,17 @@
+{
+  "task": "ml-checkpoint-reproducibility-engine",
+  "trajectory_type": "persistent",
+  "rounds": 8,
+  "model": "gpt-5.4-mini-2026-03-17",
+  "model_max_tokens": 2048,
+  "upstream_revisions": {
+    "amplio": "396432a6006634b014af6ec44fe1b9d9cb301057",
+    "harbor": "99218a4611e3bd76e49ce3b5f977e8c8134ad3ac",
+    "evocode": "f8fcfaa1c9ad1c5b0bbc433323b587e4ddea2f32"
+  },
+  "adapter_sha256": "ee7d6fe0b5c0480e81a5b552935d9667e5de8be2dd006f725509c37faca7c594",
+  "runtime_binary_sha256": "077e32f9bde260b8dcb8440581dd97db41805694269977312517517faab71667",
+  "retry_patch_sha256": "ebd10170a3f385fde1ac9d7e6ab3bd099db14856332fc9a0e16d4b449ec6670e",
+  "task_file_hashes": "audit/task_file_hashes.json",
+  "retry_patch": "audit/openai-429-retry-budget.patch"
+}

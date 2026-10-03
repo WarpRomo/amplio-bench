@@ -1,0 +1,12 @@
+[run]
+# May be overridden by AMPLIO_BENCH_HARBOR.
+harbor_bin = "harbor"
+adapter = "adapters.harbor.amplio_agent:AmplioAgent"
+environment = "daytona"
+resume_trajectory = true
+n_attempts = 1
+n_concurrent = 1
+monitor_timeout_sec = 1700
+
+[output]
+jobs_subdir = "harbor"

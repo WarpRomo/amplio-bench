@@ -1,0 +1,12 @@
+requirement,success,fail,total,success_rate
+ancestors-subcmd,0,1,1,0.0
+build,1,0,1,1.0
+critical-path,0,1,1,0.0
+diff-equivalence,1,0,1,1.0
+hash-output,0,1,1,0.0
+impact-flags,0,7,7,0.0
+impact-subcmd,3,15,18,0.16666666666666666
+impact-validation,0,1,1,0.0
+list-text,0,1,1,0.0
+plan-text-format,0,1,1,0.0
+schedule-assign,0,1,1,0.0

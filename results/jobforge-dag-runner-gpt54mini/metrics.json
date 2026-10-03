@@ -1,0 +1,227 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "reward": 0.0,
+      "cases_total": 45,
+      "cases_success": 3,
+      "cases_fail": 42,
+      "success_rate": 0.06666666666666667,
+      "stable_success": null,
+      "regressions": null,
+      "recoveries": null,
+      "stable_fail": null,
+      "new_cases": null,
+      "new_success": null,
+      "new_fail": null,
+      "new_success_rate": null
+    },
+    {
+      "round": 2,
+      "reward": 0.0,
+      "cases_total": 34,
+      "cases_success": 4,
+      "cases_fail": 30,
+      "success_rate": 0.11764705882352941,
+      "stable_success": 2,
+      "regressions": 1,
+      "recoveries": 2,
+      "stable_fail": 29,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    },
+    {
+      "round": 3,
+      "reward": 0.0,
+      "cases_total": 32,
+      "cases_success": 3,
+      "cases_fail": 29,
+      "success_rate": 0.09375,
+      "stable_success": 1,
+      "regressions": 3,
+      "recoveries": 2,
+      "stable_fail": 26,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    },
+    {
+      "round": 4,
+      "reward": 0.0,
+      "cases_total": 31,
+      "cases_success": 7,
+      "cases_fail": 24,
+      "success_rate": 0.22580645161290322,
+      "stable_success": 2,
+      "regressions": 1,
+      "recoveries": 5,
+      "stable_fail": 23,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    },
+    {
+      "round": 5,
+      "reward": 0.0,
+      "cases_total": 32,
+      "cases_success": 5,
+      "cases_fail": 27,
+      "success_rate": 0.15625,
+      "stable_success": 2,
+      "regressions": 5,
+      "recoveries": 3,
+      "stable_fail": 21,
+      "new_cases": 1,
+      "new_success": 0,
+      "new_fail": 1,
+      "new_success_rate": 0.0
+    },
+    {
+      "round": 6,
+      "reward": 0.0,
+      "cases_total": 27,
+      "cases_success": 2,
+      "cases_fail": 25,
+      "success_rate": 0.07407407407407407,
+      "stable_success": 2,
+      "regressions": 3,
+      "recoveries": 0,
+      "stable_fail": 22,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    },
+    {
+      "round": 7,
+      "reward": 0.0,
+      "cases_total": 22,
+      "cases_success": 2,
+      "cases_fail": 20,
+      "success_rate": 0.09090909090909091,
+      "stable_success": 1,
+      "regressions": 0,
+      "recoveries": 1,
+      "stable_fail": 20,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    },
+    {
+      "round": 8,
+      "reward": 0.0,
+      "cases_total": 38,
+      "cases_success": 7,
+      "cases_fail": 31,
+      "success_rate": 0.18421052631578946,
+      "stable_success": 1,
+      "regressions": 1,
+      "recoveries": 4,
+      "stable_fail": 16,
+      "new_cases": 16,
+      "new_success": 2,
+      "new_fail": 14,
+      "new_success_rate": 0.125
+    },
+    {
+      "round": 9,
+      "reward": 0.0,
+      "cases_total": 34,
+      "cases_success": 5,
+      "cases_fail": 29,
+      "success_rate": 0.14705882352941177,
+      "stable_success": 3,
+      "regressions": 3,
+      "recoveries": 2,
+      "stable_fail": 26,
+      "new_cases": 0,
+      "new_success": 0,
+      "new_fail": 0,
+      "new_success_rate": null
+    }
+  ],
+  "final_round_requirements": [
+    {
+      "requirement": "ancestors-subcmd",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "build",
+      "success": 1,
+      "fail": 0,
+      "total": 1,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "critical-path",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "diff-equivalence",
+      "success": 1,
+      "fail": 0,
+      "total": 1,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "hash-output",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "impact-flags",
+      "success": 0,
+      "fail": 7,
+      "total": 7,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "impact-subcmd",
+      "success": 3,
+      "fail": 15,
+      "total": 18,
+      "success_rate": 0.16666666666666666
+    },
+    {
+      "requirement": "impact-validation",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "list-text",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "plan-text-format",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "schedule-assign",
+      "success": 0,
+      "fail": 1,
+      "total": 1,
+      "success_rate": 0.0
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "classification": "clean_complete_single_trajectory",
+  "harbor_exit_code": 0,
+  "expected_rounds": 8,
+  "verifier_rounds_found": 8,
+  "binary_rewards": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "runtime_error_patterns": [],
+  "sandbox_postflight_clean": true,
+  "verifier_isolation_source_check": true,
+  "validation_status": "PASS",
+  "scope": "single-run reference trajectory"
+}

@@ -1,0 +1,386 @@
+{
+  "classification": "clean_complete_8_round_run",
+  "rounds": [
+    {
+      "round": 1,
+      "reward": 0.0,
+      "cases_total": 115,
+      "cases_success": 34,
+      "cases_fail": 81,
+      "success_rate": 0.2956521739130435
+    },
+    {
+      "round": 2,
+      "reward": 0.0,
+      "cases_total": 151,
+      "cases_success": 54,
+      "cases_fail": 97,
+      "success_rate": 0.3576158940397351,
+      "stable_success": 30,
+      "regressions": 4,
+      "recoveries": 0,
+      "stable_fail": 81,
+      "new_cases": 36,
+      "new_success": 24,
+      "new_fail": 12,
+      "new_success_rate": 0.6666666666666666
+    },
+    {
+      "round": 3,
+      "reward": 0.0,
+      "cases_total": 168,
+      "cases_success": 52,
+      "cases_fail": 116,
+      "success_rate": 0.30952380952380953,
+      "stable_success": 50,
+      "regressions": 4,
+      "recoveries": 0,
+      "stable_fail": 97,
+      "new_cases": 17,
+      "new_success": 2,
+      "new_fail": 15,
+      "new_success_rate": 0.11764705882352941
+    },
+    {
+      "round": 4,
+      "reward": 0.0,
+      "cases_total": 204,
+      "cases_success": 59,
+      "cases_fail": 145,
+      "success_rate": 0.28921568627450983,
+      "stable_success": 51,
+      "regressions": 1,
+      "recoveries": 2,
+      "stable_fail": 114,
+      "new_cases": 36,
+      "new_success": 6,
+      "new_fail": 30,
+      "new_success_rate": 0.16666666666666666
+    },
+    {
+      "round": 5,
+      "reward": 0.0,
+      "cases_total": 233,
+      "cases_success": 60,
+      "cases_fail": 173,
+      "success_rate": 0.2575107296137339,
+      "stable_success": 59,
+      "regressions": 0,
+      "recoveries": 0,
+      "stable_fail": 145,
+      "new_cases": 29,
+      "new_success": 1,
+      "new_fail": 28,
+      "new_success_rate": 0.034482758620689655
+    },
+    {
+      "round": 6,
+      "reward": 0.0,
+      "cases_total": 251,
+      "cases_success": 64,
+      "cases_fail": 187,
+      "success_rate": 0.2549800796812749,
+      "stable_success": 59,
+      "regressions": 1,
+      "recoveries": 1,
+      "stable_fail": 172,
+      "new_cases": 18,
+      "new_success": 4,
+      "new_fail": 14,
+      "new_success_rate": 0.2222222222222222
+    },
+    {
+      "round": 7,
+      "reward": 0.0,
+      "cases_total": 268,
+      "cases_success": 64,
+      "cases_fail": 204,
+      "success_rate": 0.23880597014925373,
+      "stable_success": 62,
+      "regressions": 2,
+      "recoveries": 1,
+      "stable_fail": 186,
+      "new_cases": 17,
+      "new_success": 1,
+      "new_fail": 16,
+      "new_success_rate": 0.058823529411764705
+    },
+    {
+      "round": 8,
+      "reward": 0.0,
+      "cases_total": 278,
+      "cases_success": 64,
+      "cases_fail": 214,
+      "success_rate": 0.2302158273381295,
+      "stable_success": 64,
+      "regressions": 0,
+      "recoveries": 0,
+      "stable_fail": 204,
+      "new_cases": 10,
+      "new_success": 0,
+      "new_fail": 10,
+      "new_success_rate": 0.0
+    }
+  ],
+  "final_round_requirements": [
+    {
+      "requirement": "audit-lineage",
+      "success": 0,
+      "fail": 9,
+      "total": 9,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "audit-lineage.cycle",
+      "success": 2,
+      "fail": 1,
+      "total": 3,
+      "success_rate": 0.6666666666666666
+    },
+    {
+      "requirement": "audit-lineage.duplicate",
+      "success": 2,
+      "fail": 0,
+      "total": 2,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "audit-lineage.timestamp",
+      "success": 2,
+      "fail": 1,
+      "total": 3,
+      "success_rate": 0.6666666666666666
+    },
+    {
+      "requirement": "audit-lineage.unresolved-parent",
+      "success": 2,
+      "fail": 0,
+      "total": 2,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "build",
+      "success": 1,
+      "fail": 0,
+      "total": 1,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "compare-outputs",
+      "success": 2,
+      "fail": 12,
+      "total": 14,
+      "success_rate": 0.14285714285714285
+    },
+    {
+      "requirement": "compare.histogram",
+      "success": 3,
+      "fail": 24,
+      "total": 27,
+      "success_rate": 0.1111111111111111
+    },
+    {
+      "requirement": "compare.shape-mismatch",
+      "success": 4,
+      "fail": 7,
+      "total": 11,
+      "success_rate": 0.36363636363636365
+    },
+    {
+      "requirement": "drift-analysis",
+      "success": 0,
+      "fail": 9,
+      "total": 9,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.convergence",
+      "success": 0,
+      "fail": 5,
+      "total": 5,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.convergence-nonstrict",
+      "success": 0,
+      "fail": 2,
+      "total": 2,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.sorted-output",
+      "success": 0,
+      "fail": 6,
+      "total": 6,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.stability",
+      "success": 0,
+      "fail": 3,
+      "total": 3,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.stability-maxdenom",
+      "success": 0,
+      "fail": 4,
+      "total": 4,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.stability-meandenom",
+      "success": 0,
+      "fail": 5,
+      "total": 5,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.stable-classification",
+      "success": 0,
+      "fail": 7,
+      "total": 7,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "drift.threshold",
+      "success": 2,
+      "fail": 18,
+      "total": 20,
+      "success_rate": 0.1
+    },
+    {
+      "requirement": "drift.top-k",
+      "success": 1,
+      "fail": 13,
+      "total": 14,
+      "success_rate": 0.07142857142857142
+    },
+    {
+      "requirement": "generate-report",
+      "success": 7,
+      "fail": 6,
+      "total": 13,
+      "success_rate": 0.5384615384615384
+    },
+    {
+      "requirement": "json-errors.toplevel",
+      "success": 4,
+      "fail": 0,
+      "total": 4,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "json-errors.unreadable",
+      "success": 6,
+      "fail": 0,
+      "total": 6,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "json-errors.usage",
+      "success": 4,
+      "fail": 0,
+      "total": 4,
+      "success_rate": 1.0
+    },
+    {
+      "requirement": "lineage.depths-width",
+      "success": 0,
+      "fail": 12,
+      "total": 12,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "lineage.equal-timestamps",
+      "success": 2,
+      "fail": 4,
+      "total": 6,
+      "success_rate": 0.3333333333333333
+    },
+    {
+      "requirement": "merge.average",
+      "success": 0,
+      "fail": 3,
+      "total": 3,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "merge.dtype-promotion",
+      "success": 0,
+      "fail": 2,
+      "total": 2,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "merge.first",
+      "success": 0,
+      "fail": 8,
+      "total": 8,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "merge.last",
+      "success": 0,
+      "fail": 3,
+      "total": 3,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "merge.tensor-sources",
+      "success": 0,
+      "fail": 2,
+      "total": 2,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "report.comparison-missing",
+      "success": 3,
+      "fail": 5,
+      "total": 8,
+      "success_rate": 0.375
+    },
+    {
+      "requirement": "report.lineage-detail",
+      "success": 2,
+      "fail": 9,
+      "total": 11,
+      "success_rate": 0.18181818181818182
+    },
+    {
+      "requirement": "toml.dotted-keys",
+      "success": 3,
+      "fail": 7,
+      "total": 10,
+      "success_rate": 0.3
+    },
+    {
+      "requirement": "toml.inline-comments",
+      "success": 0,
+      "fail": 4,
+      "total": 4,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "validate-manifest",
+      "success": 2,
+      "fail": 7,
+      "total": 9,
+      "success_rate": 0.2222222222222222
+    },
+    {
+      "requirement": "verify-checkpoint",
+      "success": 0,
+      "fail": 16,
+      "total": 16,
+      "success_rate": 0.0
+    },
+    {
+      "requirement": "verify-checkpoint.invalid",
+      "success": 10,
+      "fail": 0,
+      "total": 10,
+      "success_rate": 1.0
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "task": "jobforge-dag-runner",
+  "category": "code-build-greenfield-go",
+  "difficulty": "hard",
+  "rounds": 9,
+  "change_types": [
+    [
+      "extension"
+    ],
+    [
+      "extension"
+    ],
+    [
+      "extension"
+    ],
+    [
+      "extension",
+      "correction"
+    ],
+    [
+      "extension"
+    ],
+    [
+      "extension"
+    ],
+    [
+      "extension"
+    ],
+    [
+      "extension",
+      "conflict"
+    ],
+    [
+      "extension"
+    ]
+  ],
+  "model": "gpt-5.4-mini-2026-03-17",
+  "model_max_tokens": 2048,
+  "trajectory_type": "persistent",
+  "upstream_revisions": {
+    "amplio": "396432a6006634b014af6ec44fe1b9d9cb301057",
+    "harbor": "99218a4611e3bd76e49ce3b5f977e8c8134ad3ac",
+    "evocode": "f8fcfaa1c9ad1c5b0bbc433323b587e4ddea2f32"
+  },
+  "validation_status": "PASS",
+  "harbor_exit_code": 0,
+  "final_cases_success": 5,
+  "final_cases_total": 34,
+  "final_reward": 0.0
+}

@@ -1,0 +1,13 @@
+diff --git a/internal/llm/openai/openai.go b/internal/llm/openai/openai.go
+index 41fd973..da9960a 100644
+--- a/internal/llm/openai/openai.go
++++ b/internal/llm/openai/openai.go
+@@ -487,7 +487,7 @@ func (p *provider) post(ctx context.Context, body map[string]any) (*http.Respons
+ 	return nil, fmt.Errorf("openai request failed after %d attempts: %w", maxRetries, lastErr)
+ }
+ 
+-const maxRetries = 3
++const maxRetries = 6
+ 
+ func retryDelay(attempt int) time.Duration {
+ 	return time.Duration(1<<attempt) * time.Second
