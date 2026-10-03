@@ -1,19 +1,21 @@
 # Reference trajectory: GPT-5.4 Mini × EvoCode
 
-This directory contains the compact public result from one validated 8-round,
-persistent Amplio trajectory on an evolving EvoCode task.
+Compact public artifacts from one validated 8-round persistent Amplio trajectory on the `ml-checkpoint-reproducibility-engine` EvoCode workload.
 
-The result is included as a reference for the benchmark format, not as a model
-leaderboard claim.
+- Rounds: 8
+- Final verifier cases: 64 / 278
+- Final binary reward: 0.0
+- Validation: PASS
+- Scope: single trajectory, not an aggregate model ranking
 
-Included artifacts:
+Key artifacts:
 
-- `reference_summary.csv` — concise round-by-round result
-- `official_case_metrics.{csv,json}` — case-level trajectory metrics
+- `reference_summary.csv` — concise round-by-round baseline
+- `official_case_metrics.{csv,json}` — retained case-level trajectory metrics
 - `generated/` — analysis regenerated from the retained run
+- `difficulty/` — structural and released-panel adaptation-difficulty analysis
 - `provenance.json` — path-free task/model/upstream provenance
-- `validation.json` — compact run-validity record
-- `audit/` — non-secret hashes and the transport-only retry patch
+- `validation.json` — compact validity record
+- `audit/` — non-secret hashes and retained retry patch
 
-No machine hostname, user home, credentials, or absolute execution paths are
-included in the public result.
+See [`difficulty/adaptation_difficulty.md`](difficulty/adaptation_difficulty.md) for the per-round difficulty decomposition.

@@ -1,9 +1,12 @@
-.PHONY: test compile check
+.PHONY: test compile shell check
 
 test:
-	PYTHONPATH=src python3 -m unittest discover -s tests -v
+	PYTHONPATH=src python3 -W error -m unittest discover -s tests -v
 
 compile:
-	PYTHONPATH=src python3 -m compileall -q src tests
+	PYTHONPATH=src python3 -W error -m compileall -q src tests
 
-check: test compile
+shell:
+	@for f in scripts/*.sh; do bash -n "$$f"; done
+
+check: test compile shell

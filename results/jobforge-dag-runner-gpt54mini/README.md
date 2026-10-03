@@ -1,19 +1,20 @@
 # Jobforge DAG Runner — GPT-5.4 Mini
 
-A second full benchmark trajectory produced through `amplio-bench` on a different
-official EvoCode workload.
+Compact public artifacts from one validated 9-round persistent Amplio trajectory on the `jobforge-dag-runner` EvoCode workload.
 
-- Task: `jobforge-dag-runner`
-- Category: `code-build-greenfield-go`
-- Difficulty: `hard`
 - Rounds: 9
-- Trajectory: persistent
-- Model: GPT-5.4 Mini
-- Validation: PASS
-- Final cases: 5/34
+- Final verifier cases: 5 / 34
 - Final binary reward: 0.0
+- Validation: PASS
+- Scope: single trajectory, not an aggregate model ranking
 
-See `summary.md` and `round_metrics.csv` for the round-by-round trajectory.
+Key artifacts:
 
-This is a single trajectory and should not be interpreted as a model leaderboard
-or statistically aggregated result.
+- `round_metrics.csv` — case-level trajectory transitions
+- `final_requirements.csv` — final active requirement breakdown
+- `metrics.json` — machine-readable analysis
+- `summary.md` — concise round-by-round summary
+- `difficulty/` — structural and released-panel adaptation-difficulty analysis
+- `run.json` — compact path-free run metadata
+
+See [`difficulty/adaptation_difficulty.md`](difficulty/adaptation_difficulty.md) for the per-round difficulty decomposition.

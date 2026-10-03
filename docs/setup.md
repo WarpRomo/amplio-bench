@@ -1,59 +1,52 @@
 # Setup
 
-`amplio-bench` does not store provider or sandbox credentials.
+`amplio-bench` keeps credentials and large runtime artifacts outside the repository.
 
 ## Python
 
 Python 3.11+ is required.
 
-Create an environment, then install the package:
-
 ```bash
-python3.12 -m venv .venv
+python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 ```
 
-The core analysis/audit tooling uses the Python standard library.
+The core analysis/audit package uses only the Python standard library.
 
-Running the EvoCode/Harbor backend additionally requires compatible installations
-of Harbor, Daytona, Amplio, and EvoCode. Those are intentionally external
-dependencies because benchmark runs should pin their exact upstream revisions.
+Running the EvoCode/Harbor backend additionally requires compatible installations of Amplio, Harbor, the sandbox backend, and EvoCode. Those are intentionally external so benchmark runs can pin exact upstream revisions.
 
 ## Credentials
 
-Export credentials in your shell or source a private file outside the repo:
+Export provider/sandbox credentials in your shell or source a private file outside the repo.
 
 ```bash
 export OPENAI_API_KEY='...'
 export DAYTONA_API_KEY='...'
 ```
 
-The repository includes `.env.example` containing variable names only.
+`.env.example` contains variable names only. Do not commit `.env`, API keys, sandbox tokens, private traces, or proprietary task data.
 
-Never commit `.env`, API keys, sandbox tokens, private traces, or proprietary task
-data. `.gitignore` excludes common credential files and the publish script runs a
-secret scan before committing.
+Before publishing artifacts, run the secret scanner with the relevant credential environment loaded:
 
-## Harbor path
+```bash
+amplio-bench secret-scan .
+```
 
-The CLI accepts an explicit Harbor executable through configuration or the
-`AMPLIO_BENCH_HARBOR` environment variable. Do not rely on Harbor being globally
-installed on `PATH`.
+## Harbor executable
 
-Example:
+Set the Harbor executable explicitly:
 
 ```bash
 export AMPLIO_BENCH_HARBOR=/path/to/venv/bin/harbor
 ```
 
+The CLI also accepts the configured command in `configs/evocode.example.toml`, but explicit executable paths are preferred for reproducible runs.
+
 ## Amplio runtime
 
-The Harbor adapter can use a prebuilt Amplio binary through the environment expected
-by the adapter, for example:
+The Harbor adapter uses the Amplio runtime supplied by the surrounding environment. Keep the runtime binary hash and source revision in provenance for benchmark results.
 
-```bash
-export AMPLIO_HOST_BIN=/path/to/amplio
-```
+## Raw runs
 
-Keep the binary hash and source revision in the run provenance.
+Keep raw trajectories, sandbox artifacts, and large logs outside Git. Commit only compact, sanitized summaries under `results/`.

@@ -1,144 +1,185 @@
 # amplio-bench
 
-A reproducible harness for benchmarking **Amplio on long-horizon, evolving tasks**.
+A reproducible benchmark harness for evaluating **Amplio on long-horizon, evolving tasks**.
 
-The core repo is intentionally benchmark-agnostic. **EvoCode is the first supported workload**, not the definition of the project. It is useful because it provides persistent multi-round tasks with cumulative executable verification.
+`amplio-bench` keeps the workload, runner, system under test, and analysis layers separate. EvoCode is the first supported workload; the core analysis is designed around ordered interventions, persistent agent state, and machine-readable verification rather than any one benchmark.
 
 ## What it measures
 
-- cumulative externally verified progress
-- success on newly introduced requirements
-- regressions of previously passing behavior
-- recoveries of previously failing behavior
+The harness reports interpretable trajectory-level signals instead of collapsing behavior into one opaque score:
+
+- cumulative verifier case completion
+- success on newly introduced cases
+- retired and retained cases
+- regressions and recoveries
+- case-set churn across adaptations
 - final per-requirement performance
-- task / adapter / dependency provenance
-- runtime validity and sandbox cleanup
-- verifier isolation for multi-step Harbor runs
+- structural adaptation descriptors
+- released-panel adaptation difficulty
+- run validity, provenance, and secret hygiene
 
-The repo intentionally avoids inventing one opaque "Amplio score".
-
-## Setup and credentials
-
-See [`docs/setup.md`](docs/setup.md).
-
-Credentials are supplied only through environment variables/private files and are
-never written into repository configuration or result manifests.
+For difficulty analysis, structural change, released-panel difficulty, and the target agent's observed sequential outcome are intentionally kept as separate axes.
 
 ## Architecture
 
 ```text
-Evolving benchmark task
+evolving task + verifier
         ↓
-Benchmark runner + official verifier
+benchmark runner
         ↓
-Thin Amplio adapter
+Amplio adapter
         ↓
-One persistent Amplio trajectory + workspace
+persistent Amplio trajectory + workspace
         ↓
-Sandbox / execution environment
+verifier outputs
+        ↓
+metrics + difficulty analysis + audit + provenance
 ```
 
-For EvoCode, Harbor drives the rounds and official verifier. Round 1 starts one Amplio trajectory; later corrections/extensions are sent into the same session and workspace. The official cumulative verifier runs after each agent phase.
+For the EvoCode backend, Harbor owns round execution and the official verifier. Round 1 starts one Amplio trajectory; later extensions, corrections, and conflicts are sent into the same persistent session/workspace.
 
-## Reference trajectory
+## Install
 
-The first checked-in reference is one validated 8-round EvoCode run with Amplio + GPT-5.4 Mini.
-
-| Round | Passing cases | Rate | New solved | Regressions | Recoveries |
-|---:|---:|---:|---:|---:|---:|
-| 1 | 34 / 115 | 29.6% | — | — | — |
-| 2 | 54 / 151 | 35.8% | 24 / 36 | 4 | 0 |
-| 3 | 52 / 168 | 31.0% | 2 / 17 | 4 | 0 |
-| 4 | 59 / 204 | 28.9% | 6 / 36 | 1 | 2 |
-| 5 | 60 / 233 | 25.8% | 1 / 29 | 0 | 0 |
-| 6 | 64 / 251 | 25.5% | 4 / 18 | 1 | 1 |
-| 7 | 64 / 268 | 23.9% | 1 / 17 | 2 | 1 |
-| 8 | 64 / 278 | 23.0% | 0 / 10 | 0 | 0 |
-
-This is a **single reference trajectory**, not an aggregate reliability estimate or model ranking.
-
-## Bootstrap the exact validated reference experiment
+Python 3.11+ is required.
 
 ```bash
-unzip amplio-bench.zip
-cd amplio-bench
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e .
+amplio-bench --help
 ```
 
-This makes **zero model/API calls**. It copies the exact validated adapter and compact result artifacts already in the reference environment, then independently re-runs this repo's tests, case analysis, run audit, provenance generation, and secret scan against the original trajectory.
+The analysis and audit package uses only the Python standard library. Running EvoCode additionally requires compatible external installations of Amplio, Harbor, the sandbox backend, and EvoCode.
 
-## Analyze a run
+See [`docs/setup.md`](docs/setup.md).
+
+## Run an EvoCode task
+
+Set the Harbor executable explicitly:
 
 ```bash
-PYTHONPATH=src python3 -m amplio_bench.cli analyze-evocode   --run-dir /path/to/run --out-dir /path/to/analysis
+export AMPLIO_BENCH_HARBOR=/path/to/harbor
 ```
 
-Outputs `metrics.json`, `round_metrics.csv`, `final_requirements.csv`, and `summary.md`.
-
-## Audit a run
+Then run a persistent trajectory:
 
 ```bash
-PYTHONPATH=src python3 -m amplio_bench.cli audit-run   --run-dir /path/to/run --expected-rounds 8   --harbor-root /path/to/harbor --out validation.json
+amplio-bench run-evocode \
+  --config configs/evocode.example.toml \
+  --task /path/to/evocode-task \
+  --out runs/example \
+  --model 'provider:model'
 ```
 
-## Provenance manifest
+`scripts/run_evocode_example.sh` provides the same flow as a small portable shell wrapper.
+
+## Analyze a trajectory
 
 ```bash
-PYTHONPATH=src python3 -m amplio_bench.cli manifest   --task-dir /path/to/task   --adapter adapters/harbor/amplio_agent.py   --repo amplio=/path/to/amplio   --repo harbor=/path/to/harbor   --repo evocode=/path/to/EvoCodeBench   --out manifest.json
+amplio-bench analyze-evocode \
+  --run-dir /path/to/run \
+  --out-dir /path/to/analysis
 ```
 
-## Run EvoCode through Amplio
+Outputs:
 
-After bootstrapping the validated adapter:
+- `metrics.json`
+- `round_metrics.csv`
+- `final_requirements.csv`
+- `summary.md`
+
+Transition metrics use stable verifier case IDs to distinguish newly introduced cases, retired cases, regressions, recoveries, and retained behavior.
+
+## Analyze adaptation difficulty
 
 ```bash
-PYTHONPATH=src python3 -m amplio_bench.cli run-evocode   --config configs/evocode.example.toml   --task /path/to/task --out runs/example   --model 'openai{max_tokens=2048}:gpt-5.4-mini-2026-03-17'
+amplio-bench analyze-difficulty \
+  --task-dir /path/to/task \
+  --run-dir /path/to/run \
+  --panel-dir /path/to/released/task-json \
+  --out-dir /path/to/difficulty
 ```
 
-Provider credentials stay in environment variables and are never written into the run manifest.
+The analyzer reports:
 
-## Validity
+- structural change: instruction/reference/verifier footprint and case/requirement churn
+- released-panel case completion and perfect-round success
+- benchmark-wide regularized 1PL difficulty calibration
+- target trajectory case completion, regressions, and recoveries
 
-A result is not considered valid merely because a command exits. The audit checks, where applicable:
+The primary fine-grained panel calibration uses each model-round's case-completion ratio. Binary perfect-round difficulty is retained as a secondary view because it can saturate when all models miss at least one case.
 
-1. expected verifier rounds exist exactly once;
-2. Harbor exits successfully;
-3. known runtime/provider failures are absent;
-4. sandbox cleanup completes;
-5. task/code provenance is recorded;
-6. Harbor clears prior verifier artifacts before the next agent phase;
-7. publishable files contain no provider credentials.
+These are **descriptive sequential-panel difficulty measures**, not intrinsic isolated-round difficulty. The recommended causal control is an oracle-prefix isolated-round evaluation with the same target agent.
 
-See `docs/VALIDITY.md`.
+See [`docs/ADAPTATION_DIFFICULTY.md`](docs/ADAPTATION_DIFFICULTY.md).
 
-## Layout
+## Reference results
+
+Two validated single trajectories are checked in as compact examples of the result format:
+
+| Workload | Rounds | Final cases | Final binary reward |
+|---|---:|---:|---:|
+| ML checkpoint reproducibility | 8 | 64 / 278 | 0.0 |
+| Jobforge DAG runner | 9 | 5 / 34 | 0.0 |
+
+These are **reference trajectories**, not aggregate reliability estimates or model rankings.
+
+- [`results/reference-gpt54mini/`](results/reference-gpt54mini/)
+- [`results/jobforge-dag-runner-gpt54mini/`](results/jobforge-dag-runner-gpt54mini/)
+
+## Validity and provenance
+
+A benchmark result is not considered valid merely because the process exits. The audit layer checks, where applicable:
+
+1. expected verifier rounds exist exactly once
+2. the runner exits successfully
+3. known runtime/provider failures are absent
+4. sandbox cleanup completes
+5. verifier isolation is preserved across rounds
+6. task, adapter, and dependency provenance are recorded
+7. publishable artifacts contain no known credentials
+
+See [`docs/VALIDITY.md`](docs/VALIDITY.md) and [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md).
+
+## Project layout
 
 ```text
-adapters/harbor/        Amplio ↔ Harbor integration
-configs/                reusable run configs
-docs/                   methodology / metrics / validity / backends
-results/                compact reference results
-scripts/                bootstrap, verification, GitHub publication helpers
-src/amplio_bench/       runner, analysis, audit, provenance
-tests/                   unit tests
+adapters/harbor/        Harbor ↔ Amplio integration
+configs/                reusable run configuration
+docs/                   methodology, metrics, validity, difficulty, roadmap
+experiments/            guidance for retaining raw experiment evidence
+results/                compact validated reference results
+scripts/                portable helper scripts
+src/amplio_bench/       runner, analysis, difficulty, audit, provenance
+tests/                   unit and repository-hygiene tests
 ```
+
+Large raw trajectories and credentials stay outside Git.
+
+## Development
+
+Run the zero-cost checks with:
+
+```bash
+make check
+```
+
+or directly:
+
+```bash
+PYTHONPATH=src python3 -W error -m unittest discover -s tests -v
+PYTHONPATH=src python3 -W error -m compileall -q src tests
+for f in scripts/*.sh; do bash -n "$f"; done
+```
+
+A live end-to-end smoke should be run before major releases when runner/adapter behavior changes.
+
+## Scope
+
+The current repository establishes the harness and analysis layer. The main research control not yet implemented is **oracle-prefix isolation**, which is needed to separate adaptation difficulty from the penalty of carrying an imperfect long-running history.
+
+See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## License
 
 Apache-2.0.
-
-
-## Development
-
-Run the zero-cost local checks with:
-
-```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 -m compileall -q src tests
-```
-
-A separate live integration smoke should be run before releases to exercise the
-full runner → Harbor → Amplio → sandbox → verifier path.
-
-The core package is environment-agnostic. Provider credentials, sandbox
-credentials, benchmark checkouts, and runtime binaries are supplied externally
-through environment variables or command-line paths.

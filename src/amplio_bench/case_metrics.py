@@ -1,80 +1,310 @@
 from __future__ import annotations
+
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
-import csv, json, re
-PASS_STATUSES={"success","pass"}
-ROUND_RE=re.compile(r"(?:^|/)steps/round-(\d+)/verifier/test-stdout\.txt$")
-FIELD_RE=re.compile(r"\b([A-Za-z0-9_-]+)=([^\s]+)")
+from typing import Any
+import csv
+import json
+import re
+
+
+PASS_STATUSES = {"success", "pass"}
+ROUND_RE = re.compile(
+    r"(?:^|/)steps/round-(\d+)/verifier/test-stdout\.txt$"
+)
+FIELD_RE = re.compile(r"\b([A-Za-z0-9_-]+)=([^\s]+)")
+
+
 @dataclass(frozen=True)
 class Case:
-    case_id:str; status:str; origin:str|None=None; requirement:str|None=None; case_type:str|None=None
+    case_id: str
+    status: str
+    origin: str | None = None
+    requirement: str | None = None
+    case_type: str | None = None
+
     @property
-    def passed(self): return self.status in PASS_STATUSES
+    def passed(self) -> bool:
+        return self.status in PASS_STATUSES
+
+
 @dataclass
 class RoundMetrics:
-    round:int; reward:float; cases_total:int; cases_success:int; cases_fail:int; success_rate:float
-    stable_success:int|None=None; regressions:int|None=None; recoveries:int|None=None; stable_fail:int|None=None
-    new_cases:int|None=None; new_success:int|None=None; new_fail:int|None=None; new_success_rate:float|None=None
+    round: int
+    reward: float
+    cases_total: int
+    cases_success: int
+    cases_fail: int
+    success_rate: float
+    stable_success: int | None = None
+    regressions: int | None = None
+    recoveries: int | None = None
+    stable_fail: int | None = None
+    new_cases: int | None = None
+    new_success: int | None = None
+    new_fail: int | None = None
+    new_success_rate: float | None = None
+    retired_cases: int | None = None
+    retained_cases: int | None = None
+    case_churn_rate: float | None = None
 
-def parse_case_line(line):
-    if not line.startswith('CASE_RESULT '): return None
-    f=dict(FIELD_RE.findall(line))
-    if not f.get('case_id') or not f.get('status'): return None
-    return Case(f['case_id'],f['status'],f.get('origin_step'),f.get('requirement_ref'),f.get('case_type'))
 
-def parse_verifier_stdout(path):
-    out={}
-    for line in path.read_text(errors='replace').splitlines():
-        c=parse_case_line(line)
-        if c: out[c.case_id]=c
-    return out
+def parse_case_line(line: str) -> Case | None:
+    """Parse one EvoCode CASE_RESULT line."""
 
-def discover_round_files(run_dir):
-    found=defaultdict(list)
-    for p in Path(run_dir).rglob('test-stdout.txt'):
-        m=ROUND_RE.search(p.as_posix())
-        if m: found[int(m.group(1))].append(p)
-    bad={r:ps for r,ps in found.items() if len(ps)!=1}
-    if bad: raise ValueError('expected exactly one verifier stdout per round: '+', '.join(f'r{r}={len(ps)}' for r,ps in sorted(bad.items())))
-    return {r:ps[0] for r,ps in found.items()}
+    if not line.startswith("CASE_RESULT "):
+        return None
 
-def analyze_run(run_dir):
-    files=discover_round_files(Path(run_dir))
-    if not files: raise ValueError('no EvoCode verifier rounds found')
-    nums=sorted(files)
-    if nums != list(range(nums[0],nums[-1]+1)): raise ValueError(f'non-contiguous rounds: {nums}')
-    prev=None; by_round={}; rows=[]
-    for n in nums:
-        stdout=files[n]; cases=parse_verifier_stdout(stdout); reward=float((stdout.parent/'reward.txt').read_text().strip())
-        success=sum(c.passed for c in cases.values()); total=len(cases); row=RoundMetrics(n,reward,total,success,total-success,success/total if total else 0.0)
-        if prev is not None:
-            common=set(prev)&set(cases); new=set(cases)-set(prev)
-            row.stable_success=sum(prev[c].passed and cases[c].passed for c in common)
-            row.regressions=sum(prev[c].passed and not cases[c].passed for c in common)
-            row.recoveries=sum(not prev[c].passed and cases[c].passed for c in common)
-            row.stable_fail=sum(not prev[c].passed and not cases[c].passed for c in common)
-            row.new_cases=len(new); row.new_success=sum(cases[c].passed for c in new); row.new_fail=len(new)-row.new_success
-            row.new_success_rate=row.new_success/len(new) if new else None
-        rows.append(row); by_round[n]=cases; prev=cases
-    req=defaultdict(Counter)
-    for c in by_round[nums[-1]].values(): req[c.requirement or '?']['success' if c.passed else 'fail']+=1
-    final=[]
-    for name,count in sorted(req.items()):
-        total=count['success']+count['fail']; final.append({'requirement':name,'success':count['success'],'fail':count['fail'],'total':total,'success_rate':count['success']/total if total else 0.0})
-    return {'rounds':[asdict(x) for x in rows],'final_round_requirements':final}
+    fields = dict(FIELD_RE.findall(line))
+    if not fields.get("case_id") or not fields.get("status"):
+        return None
 
-def write_analysis(result,out_dir):
-    out=Path(out_dir); out.mkdir(parents=True,exist_ok=True); (out/'metrics.json').write_text(json.dumps(result,indent=2)+'\n')
-    fields=['round','reward','cases_success','cases_total','cases_fail','success_rate','stable_success','regressions','recoveries','stable_fail','new_cases','new_success','new_fail','new_success_rate']
-    with (out/'round_metrics.csv').open('w',newline='') as f:
-        x=csv.DictWriter(f,fieldnames=fields); x.writeheader(); [x.writerow({k:r.get(k) for k in fields}) for r in result['rounds']]
-    fields2=['requirement','success','fail','total','success_rate']
-    with (out/'final_requirements.csv').open('w',newline='') as f:
-        x=csv.DictWriter(f,fieldnames=fields2); x.writeheader(); x.writerows(result['final_round_requirements'])
-    lines=['# Run summary','','| Round | Passing | Rate | New solved | Regressions | Recoveries |','|---:|---:|---:|---:|---:|---:|']
-    for i,r in enumerate(result['rounds']):
-        if i==0: new=reg=rec='—'
-        else: new=f"{r['new_success']}/{r['new_cases']}"; reg=str(r['regressions']); rec=str(r['recoveries'])
-        lines.append(f"| {r['round']} | {r['cases_success']}/{r['cases_total']} | {100*r['success_rate']:.1f}% | {new} | {reg} | {rec} |")
-    (out/'summary.md').write_text('\n'.join(lines)+'\n')
+    return Case(
+        case_id=fields["case_id"],
+        status=fields["status"],
+        origin=fields.get("origin_step"),
+        requirement=fields.get("requirement_ref"),
+        case_type=fields.get("case_type"),
+    )
+
+
+def parse_verifier_stdout(path: Path) -> dict[str, Case]:
+    """Return the final observed state for every case ID in a verifier output."""
+
+    cases: dict[str, Case] = {}
+    for line in Path(path).read_text(errors="replace").splitlines():
+        case = parse_case_line(line)
+        if case is not None:
+            cases[case.case_id] = case
+    return cases
+
+
+def discover_round_files(run_dir: Path) -> dict[int, Path]:
+    """Find exactly one verifier stdout for each discovered round."""
+
+    found: dict[int, list[Path]] = defaultdict(list)
+    for path in Path(run_dir).rglob("test-stdout.txt"):
+        match = ROUND_RE.search(path.as_posix())
+        if match:
+            found[int(match.group(1))].append(path)
+
+    duplicates = {
+        round_: paths
+        for round_, paths in found.items()
+        if len(paths) != 1
+    }
+    if duplicates:
+        details = ", ".join(
+            f"r{round_}={len(paths)}"
+            for round_, paths in sorted(duplicates.items())
+        )
+        raise ValueError(
+            "expected exactly one verifier stdout per round: " + details
+        )
+
+    return {round_: paths[0] for round_, paths in found.items()}
+
+
+def _transition_metrics(
+    previous: dict[str, Case],
+    current: dict[str, Case],
+    row: RoundMetrics,
+) -> None:
+    previous_ids = set(previous)
+    current_ids = set(current)
+
+    retained = previous_ids & current_ids
+    introduced = current_ids - previous_ids
+    retired = previous_ids - current_ids
+    union = previous_ids | current_ids
+
+    row.stable_success = sum(
+        previous[case_id].passed and current[case_id].passed
+        for case_id in retained
+    )
+    row.regressions = sum(
+        previous[case_id].passed and not current[case_id].passed
+        for case_id in retained
+    )
+    row.recoveries = sum(
+        not previous[case_id].passed and current[case_id].passed
+        for case_id in retained
+    )
+    row.stable_fail = sum(
+        not previous[case_id].passed and not current[case_id].passed
+        for case_id in retained
+    )
+
+    row.new_cases = len(introduced)
+    row.new_success = sum(
+        current[case_id].passed
+        for case_id in introduced
+    )
+    row.new_fail = row.new_cases - row.new_success
+    row.new_success_rate = (
+        row.new_success / row.new_cases
+        if row.new_cases
+        else None
+    )
+
+    row.retired_cases = len(retired)
+    row.retained_cases = len(retained)
+    row.case_churn_rate = (
+        (len(introduced) + len(retired)) / len(union)
+        if union
+        else 0.0
+    )
+
+
+def analyze_run(run_dir: Path) -> dict[str, Any]:
+    """Analyze case-level progress across an EvoCode-style multi-round run."""
+
+    round_files = discover_round_files(Path(run_dir))
+    if not round_files:
+        raise ValueError("no EvoCode verifier rounds found")
+
+    round_numbers = sorted(round_files)
+    expected = list(range(round_numbers[0], round_numbers[-1] + 1))
+    if round_numbers != expected:
+        raise ValueError(f"non-contiguous rounds: {round_numbers}")
+
+    previous: dict[str, Case] | None = None
+    cases_by_round: dict[int, dict[str, Case]] = {}
+    rows: list[RoundMetrics] = []
+
+    for round_number in round_numbers:
+        stdout = round_files[round_number]
+        cases = parse_verifier_stdout(stdout)
+        reward = float(
+            (stdout.parent / "reward.txt").read_text().strip()
+        )
+
+        success = sum(case.passed for case in cases.values())
+        total = len(cases)
+        row = RoundMetrics(
+            round=round_number,
+            reward=reward,
+            cases_total=total,
+            cases_success=success,
+            cases_fail=total - success,
+            success_rate=success / total if total else 0.0,
+        )
+
+        if previous is not None:
+            _transition_metrics(previous, cases, row)
+
+        rows.append(row)
+        cases_by_round[round_number] = cases
+        previous = cases
+
+    requirements: dict[str, Counter[str]] = defaultdict(Counter)
+    for case in cases_by_round[round_numbers[-1]].values():
+        bucket = "success" if case.passed else "fail"
+        requirements[case.requirement or "?"][bucket] += 1
+
+    final_requirements: list[dict[str, Any]] = []
+    for name, counts in sorted(requirements.items()):
+        total = counts["success"] + counts["fail"]
+        final_requirements.append(
+            {
+                "requirement": name,
+                "success": counts["success"],
+                "fail": counts["fail"],
+                "total": total,
+                "success_rate": (
+                    counts["success"] / total if total else 0.0
+                ),
+            }
+        )
+
+    return {
+        "rounds": [asdict(row) for row in rows],
+        "final_round_requirements": final_requirements,
+    }
+
+
+def write_analysis(result: dict[str, Any], out_dir: Path) -> None:
+    """Write machine-readable and Markdown trajectory summaries."""
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    (out / "metrics.json").write_text(
+        json.dumps(result, indent=2) + "\n"
+    )
+
+    round_fields = [
+        "round",
+        "reward",
+        "cases_success",
+        "cases_total",
+        "cases_fail",
+        "success_rate",
+        "stable_success",
+        "regressions",
+        "recoveries",
+        "stable_fail",
+        "new_cases",
+        "new_success",
+        "new_fail",
+        "new_success_rate",
+        "retired_cases",
+        "retained_cases",
+        "case_churn_rate",
+    ]
+    with (out / "round_metrics.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=round_fields)
+        writer.writeheader()
+        for row in result["rounds"]:
+            writer.writerow(
+                {field: row.get(field) for field in round_fields}
+            )
+
+    requirement_fields = [
+        "requirement",
+        "success",
+        "fail",
+        "total",
+        "success_rate",
+    ]
+    with (out / "final_requirements.csv").open(
+        "w",
+        newline="",
+    ) as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=requirement_fields,
+        )
+        writer.writeheader()
+        writer.writerows(result["final_round_requirements"])
+
+    lines = [
+        "# Run summary",
+        "",
+        (
+            "| Round | Passing | Rate | New solved | Retired | Churn | "
+            "Regressions | Recoveries |"
+        ),
+        "|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+
+    for index, row in enumerate(result["rounds"]):
+        if index == 0:
+            new_solved = retired = churn = regressions = recoveries = "—"
+        else:
+            new_solved = f"{row['new_success']}/{row['new_cases']}"
+            retired = str(row["retired_cases"])
+            churn = f"{100 * row['case_churn_rate']:.1f}%"
+            regressions = str(row["regressions"])
+            recoveries = str(row["recoveries"])
+
+        lines.append(
+            f"| {row['round']} | "
+            f"{row['cases_success']}/{row['cases_total']} | "
+            f"{100 * row['success_rate']:.1f}% | "
+            f"{new_solved} | {retired} | {churn} | "
+            f"{regressions} | {recoveries} |"
+        )
+
+    (out / "summary.md").write_text("\n".join(lines) + "\n")

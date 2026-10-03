@@ -1,11 +1,65 @@
-import tempfile,unittest
+import tempfile
+import unittest
 from pathlib import Path
-from amplio_bench.case_metrics import analyze_run,parse_case_line
-class T(unittest.TestCase):
- def test_parse(self):
-  c=parse_case_line('CASE_RESULT case_id=c1 requirement_ref=build status=success');self.assertTrue(c.passed);self.assertEqual(c.requirement,'build')
- def test_transition(self):
-  with tempfile.TemporaryDirectory() as td:
-   root=Path(td);a=root/'x/steps/round-1/verifier';b=root/'x/steps/round-2/verifier';a.mkdir(parents=True);b.mkdir(parents=True)
-   (a/'reward.txt').write_text('0\n');(b/'reward.txt').write_text('0\n');(a/'test-stdout.txt').write_text('CASE_RESULT case_id=a status=success\nCASE_RESULT case_id=b status=fail\n');(b/'test-stdout.txt').write_text('CASE_RESULT case_id=a status=fail\nCASE_RESULT case_id=b status=success\nCASE_RESULT case_id=c status=success\n')
-   r=analyze_run(root)['rounds'][1];self.assertEqual((r['regressions'],r['recoveries'],r['new_success']),(1,1,1))
+
+from amplio_bench.case_metrics import (
+    analyze_run,
+    parse_case_line,
+)
+
+
+class CaseMetricsTests(unittest.TestCase):
+    def test_parse(self):
+        case = parse_case_line(
+            "CASE_RESULT case_id=c1 "
+            "requirement_ref=build status=success"
+        )
+        self.assertIsNotNone(case)
+        assert case is not None
+        self.assertTrue(case.passed)
+        self.assertEqual(case.requirement, "build")
+
+    def test_transition(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            first = root / "x/steps/round-1/verifier"
+            second = root / "x/steps/round-2/verifier"
+            first.mkdir(parents=True)
+            second.mkdir(parents=True)
+
+            (first / "reward.txt").write_text("0\n")
+            (second / "reward.txt").write_text("0\n")
+            (first / "test-stdout.txt").write_text(
+                "CASE_RESULT case_id=a status=success\n"
+                "CASE_RESULT case_id=b status=fail\n"
+            )
+            (second / "test-stdout.txt").write_text(
+                "CASE_RESULT case_id=a status=fail\n"
+                "CASE_RESULT case_id=b status=success\n"
+                "CASE_RESULT case_id=c status=success\n"
+            )
+
+            row = analyze_run(root)["rounds"][1]
+            self.assertEqual(
+                (
+                    row["regressions"],
+                    row["recoveries"],
+                    row["new_success"],
+                ),
+                (1, 1, 1),
+            )
+            self.assertEqual(
+                (
+                    row["retired_cases"],
+                    row["retained_cases"],
+                ),
+                (0, 2),
+            )
+            self.assertAlmostEqual(
+                row["case_churn_rate"],
+                1 / 3,
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

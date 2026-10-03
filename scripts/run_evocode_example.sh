@@ -8,4 +8,9 @@ set -euo pipefail
 
 PYTHON=${PYTHON:-python3}
 
-PYTHONPATH="${PYTHONPATH:-}:src" "$PYTHON" -m amplio_bench.cli run-evocode   --config configs/evocode.example.toml   --task "$TASK"   --out "$OUT"   --model "$MODEL"
+PYTHONPATH="${PYTHONPATH:-}:src" \
+"$PYTHON" -m amplio_bench.cli run-evocode \
+  --config configs/evocode.example.toml \
+  --task "$TASK" \
+  --out "$OUT" \
+  --model "$MODEL"
