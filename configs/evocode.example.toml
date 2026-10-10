@@ -7,6 +7,31 @@ resume_trajectory = true
 n_attempts = 1
 n_concurrent = 1
 monitor_timeout_sec = 1700
+# Optional Amplio native briefings selected for the whole persistent run.
+# Keep empty for the benchmark baseline. Example experiment:
+# briefings = ["second-opinion"]
+briefings = []
+# Optional operator-authored Amplio briefing markdown files. Paths may be
+# absolute or relative to this config file. They are uploaded into the
+# sandbox's Amplio data directory before the server starts.
+briefing_files = []
+# Experimental intervention guard. If set, each benchmark round at or after
+# this index must create at least one new child session. When the root ignores
+# the selected briefing, the adapter wakes it once with an explicit delegation
+# request and fails closed if no child is then observed.
+# require_subagent_from_round = 2
+# Controlled post-solve reviewer treatment. When true, natural delegation does
+# not satisfy the intervention; a fresh reviewer is explicitly requested after
+# the root's first attempt.
+force_subagent_enforcement = false
+# Strict lifecycle treatment. If the required reviewer is cancelled because the
+# parent concludes, revive it, wait for completion, then wake the root to consume
+# the result before final conclusion.
+require_completed_subagent = false
+# Tool-transport recovery treatment. If this round produced a truncated tool-call
+# turn or invalid tool arguments, wake the root once to repair incomplete edits
+# using shorter/chunked operations and rerun checks.
+recover_tool_transport_failures = false
 
 [output]
 jobs_subdir = "harbor"

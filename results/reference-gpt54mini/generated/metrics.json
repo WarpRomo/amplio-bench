@@ -14,7 +14,10 @@
       "new_cases": null,
       "new_success": null,
       "new_fail": null,
-      "new_success_rate": null
+      "new_success_rate": null,
+      "retired_cases": null,
+      "retained_cases": null,
+      "case_churn_rate": null
     },
     {
       "round": 2,
@@ -26,11 +29,14 @@
       "stable_success": 30,
       "regressions": 4,
       "recoveries": 0,
-      "stable_fail": 81,
-      "new_cases": 36,
+      "stable_fail": 79,
+      "new_cases": 38,
       "new_success": 24,
-      "new_fail": 12,
-      "new_success_rate": 0.6666666666666666
+      "new_fail": 14,
+      "new_success_rate": 0.631578947368421,
+      "retired_cases": 2,
+      "retained_cases": 113,
+      "case_churn_rate": 0.26143790849673204
     },
     {
       "round": 3,
@@ -39,14 +45,17 @@
       "cases_success": 52,
       "cases_fail": 116,
       "success_rate": 0.30952380952380953,
-      "stable_success": 50,
-      "regressions": 4,
+      "stable_success": 47,
+      "regressions": 0,
       "recoveries": 0,
-      "stable_fail": 97,
-      "new_cases": 17,
-      "new_success": 2,
-      "new_fail": 15,
-      "new_success_rate": 0.11764705882352941
+      "stable_fail": 94,
+      "new_cases": 27,
+      "new_success": 5,
+      "new_fail": 22,
+      "new_success_rate": 0.18518518518518517,
+      "retired_cases": 10,
+      "retained_cases": 141,
+      "case_churn_rate": 0.20786516853932585
     },
     {
       "round": 4,
@@ -55,14 +64,17 @@
       "cases_success": 59,
       "cases_fail": 145,
       "success_rate": 0.28921568627450983,
-      "stable_success": 51,
-      "regressions": 1,
-      "recoveries": 2,
+      "stable_success": 52,
+      "regressions": 0,
+      "recoveries": 0,
       "stable_fail": 114,
-      "new_cases": 36,
-      "new_success": 6,
-      "new_fail": 30,
-      "new_success_rate": 0.16666666666666666
+      "new_cases": 38,
+      "new_success": 7,
+      "new_fail": 31,
+      "new_success_rate": 0.18421052631578946,
+      "retired_cases": 2,
+      "retained_cases": 166,
+      "case_churn_rate": 0.1941747572815534
     },
     {
       "round": 5,
@@ -78,7 +90,10 @@
       "new_cases": 29,
       "new_success": 1,
       "new_fail": 28,
-      "new_success_rate": 0.034482758620689655
+      "new_success_rate": 0.034482758620689655,
+      "retired_cases": 0,
+      "retained_cases": 204,
+      "case_churn_rate": 0.12446351931330472
     },
     {
       "round": 6,
@@ -87,14 +102,17 @@
       "cases_success": 64,
       "cases_fail": 187,
       "success_rate": 0.2549800796812749,
-      "stable_success": 59,
-      "regressions": 1,
-      "recoveries": 1,
-      "stable_fail": 172,
-      "new_cases": 18,
+      "stable_success": 60,
+      "regressions": 0,
+      "recoveries": 0,
+      "stable_fail": 168,
+      "new_cases": 23,
       "new_success": 4,
-      "new_fail": 14,
-      "new_success_rate": 0.2222222222222222
+      "new_fail": 19,
+      "new_success_rate": 0.17391304347826086,
+      "retired_cases": 5,
+      "retained_cases": 228,
+      "case_churn_rate": 0.109375
     },
     {
       "round": 7,
@@ -104,13 +122,16 @@
       "cases_fail": 204,
       "success_rate": 0.23880597014925373,
       "stable_success": 62,
-      "regressions": 2,
-      "recoveries": 1,
+      "regressions": 0,
+      "recoveries": 0,
       "stable_fail": 186,
-      "new_cases": 17,
-      "new_success": 1,
-      "new_fail": 16,
-      "new_success_rate": 0.058823529411764705
+      "new_cases": 20,
+      "new_success": 2,
+      "new_fail": 18,
+      "new_success_rate": 0.1,
+      "retired_cases": 3,
+      "retained_cases": 248,
+      "case_churn_rate": 0.08487084870848709
     },
     {
       "round": 8,
@@ -122,11 +143,14 @@
       "stable_success": 64,
       "regressions": 0,
       "recoveries": 0,
-      "stable_fail": 204,
-      "new_cases": 10,
+      "stable_fail": 200,
+      "new_cases": 14,
       "new_success": 0,
-      "new_fail": 10,
-      "new_success_rate": 0.0
+      "new_fail": 14,
+      "new_success_rate": 0.0,
+      "retired_cases": 4,
+      "retained_cases": 264,
+      "case_churn_rate": 0.06382978723404255
     }
   ],
   "final_round_requirements": [

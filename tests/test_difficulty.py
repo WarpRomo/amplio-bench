@@ -194,6 +194,31 @@ name = "round-2"
             self.assertIn("preferred_history_control", result["methodology"])
             self.assertEqual(result["summary"]["adaptation_rounds"], 1)
 
+    def test_structural_churn_uses_semantic_case_identity(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            task = self._task(root)
+            run = root / "run-semantic"
+            for n in (1, 2):
+                verifier = run / f"steps/round-{n}/verifier"
+                verifier.mkdir(parents=True)
+                (verifier / "reward.txt").write_text("0\n")
+            (run / "steps/round-1/verifier/test-stdout.txt").write_text(
+                'CASE_RESULT case_id=c001 status=success scenario="A" requirement_ref=req-a\n'
+                'CASE_RESULT case_id=c002 status=success scenario="B" requirement_ref=req-b\n'
+                'CASE_RESULT case_id=c003 status=success scenario="C" requirement_ref=req-c\n'
+            )
+            (run / "steps/round-2/verifier/test-stdout.txt").write_text(
+                'CASE_RESULT case_id=c001 status=success scenario="A" requirement_ref=req-a\n'
+                'CASE_RESULT case_id=c002 status=success scenario="C" requirement_ref=req-c\n'
+                'CASE_RESULT case_id=c003 status=success scenario="D" requirement_ref=req-d\n'
+            )
+            rows = structural_rounds(task, run)
+            self.assertEqual(rows[1].introduced_cases, 1)
+            self.assertEqual(rows[1].retired_cases, 1)
+            self.assertEqual(rows[1].retained_cases, 2)
+            self.assertAlmostEqual(rows[1].case_churn_rate, 0.5)
+
 
 if __name__ == "__main__":
     unittest.main()

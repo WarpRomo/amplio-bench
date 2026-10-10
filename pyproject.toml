@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "Apache-2.0"}
 authors = [{name = "Ritik Jalisatgi"}]
-keywords = ["agents", "benchmarking", "long-horizon", "amplio", "evocode"]
+keywords = ["agents", "benchmarking", "long-horizon", "multi-agent", "amplio", "evocode"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: Apache Software License",

@@ -14,6 +14,7 @@ ROUND_RE = re.compile(
     r"(?:^|/)steps/round-(\d+)/verifier/test-stdout\.txt$"
 )
 FIELD_RE = re.compile(r"\b([A-Za-z0-9_-]+)=([^\s]+)")
+SCENARIO_RE = re.compile(r'\bscenario="([^"]*)"')
 
 
 @dataclass(frozen=True)
@@ -23,10 +24,40 @@ class Case:
     origin: str | None = None
     requirement: str | None = None
     case_type: str | None = None
+    scenario: str | None = None
 
     @property
     def passed(self) -> bool:
         return self.status in PASS_STATUSES
+
+    @property
+    def stable_key(self) -> str:
+        """Cross-round identity for one semantic verifier case.
+
+        EvoCode case_id values such as c001 are ordinal positions generated anew
+        by each round verifier. They are valid for same-round joins (for example
+        against the released panel) but are not stable trajectory identities when
+        cases are inserted, retired, or reordered. The canonical scenario/name is
+        stable across retained cases in the released tasks.
+        """
+
+        if self.scenario:
+            return f"scenario:{self.scenario}"
+        # Synthetic/legacy logs may not expose scenario. Preserve compatibility,
+        # but callers should not infer semantic continuity from this fallback.
+        return f"case_id:{self.case_id}"
+
+
+def index_cases_by_stable_key(cases: dict[str, "Case"]) -> dict[str, "Case"]:
+    """Index one round by semantic identity, rejecting ambiguous identities."""
+
+    indexed: dict[str, Case] = {}
+    for case in cases.values():
+        key = case.stable_key
+        if key in indexed:
+            raise ValueError(f"duplicate stable verifier case identity: {key}")
+        indexed[key] = case
+    return indexed
 
 
 @dataclass
@@ -57,6 +88,7 @@ def parse_case_line(line: str) -> Case | None:
         return None
 
     fields = dict(FIELD_RE.findall(line))
+    scenario_match = SCENARIO_RE.search(line)
     if not fields.get("case_id") or not fields.get("status"):
         return None
 
@@ -66,6 +98,7 @@ def parse_case_line(line: str) -> Case | None:
         origin=fields.get("origin_step"),
         requirement=fields.get("requirement_ref"),
         case_type=fields.get("case_type"),
+        scenario=scenario_match.group(1) if scenario_match else None,
     )
 
 
@@ -111,8 +144,10 @@ def _transition_metrics(
     current: dict[str, Case],
     row: RoundMetrics,
 ) -> None:
-    previous_ids = set(previous)
-    current_ids = set(current)
+    previous_stable = index_cases_by_stable_key(previous)
+    current_stable = index_cases_by_stable_key(current)
+    previous_ids = set(previous_stable)
+    current_ids = set(current_stable)
 
     retained = previous_ids & current_ids
     introduced = current_ids - previous_ids
@@ -120,25 +155,25 @@ def _transition_metrics(
     union = previous_ids | current_ids
 
     row.stable_success = sum(
-        previous[case_id].passed and current[case_id].passed
+        previous_stable[case_id].passed and current_stable[case_id].passed
         for case_id in retained
     )
     row.regressions = sum(
-        previous[case_id].passed and not current[case_id].passed
+        previous_stable[case_id].passed and not current_stable[case_id].passed
         for case_id in retained
     )
     row.recoveries = sum(
-        not previous[case_id].passed and current[case_id].passed
+        not previous_stable[case_id].passed and current_stable[case_id].passed
         for case_id in retained
     )
     row.stable_fail = sum(
-        not previous[case_id].passed and not current[case_id].passed
+        not previous_stable[case_id].passed and not current_stable[case_id].passed
         for case_id in retained
     )
 
     row.new_cases = len(introduced)
     row.new_success = sum(
-        current[case_id].passed
+        current_stable[case_id].passed
         for case_id in introduced
     )
     row.new_fail = row.new_cases - row.new_success

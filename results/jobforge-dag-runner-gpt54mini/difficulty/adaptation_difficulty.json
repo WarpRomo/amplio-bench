@@ -12,11 +12,11 @@
     "scope": "adaptation rounds only (R2+); R1 is initial construction",
     "adaptation_rounds": 8,
     "case_churn": {
-      "min": 0.03125,
-      "max": 0.42105263157894735,
-      "spread": 0.38980263157894735,
-      "mean": 0.15418986856438482,
-      "std": 0.12351293493526909
+      "min": 0.9090909090909091,
+      "max": 0.9871794871794872,
+      "spread": 0.07808857808857816,
+      "mean": 0.9484237493766089,
+      "std": 0.03020674678701086
     },
     "panel_round_pass_reached": {
       "min": 0.46153846153846156,
@@ -64,9 +64,9 @@
       "value": -0.38504419452038524
     },
     "highest_churn_round": {
-      "round": 8,
-      "change_types": "extension+conflict",
-      "value": 0.42105263157894735
+      "round": 2,
+      "change_types": "extension",
+      "value": 0.9871794871794872
     }
   },
   "rounds": [
@@ -117,10 +117,10 @@
       "verifier_lines_added": 410,
       "verifier_lines_removed": 690,
       "active_cases": 34,
-      "introduced_cases": 0,
-      "retired_cases": 11,
-      "retained_cases": 34,
-      "case_churn_rate": 0.24444444444444444,
+      "introduced_cases": 33,
+      "retired_cases": 44,
+      "retained_cases": 1,
+      "case_churn_rate": 0.9871794871794872,
       "active_requirements": 11,
       "introduced_requirements": 6,
       "retired_requirements": 19,
@@ -142,9 +142,9 @@
       "target_case_success": 4,
       "target_case_total": 34,
       "target_case_ratio": 0.11764705882352941,
-      "target_new_success_rate": null,
-      "target_regressions": 1,
-      "target_recoveries": 2
+      "target_new_success_rate": 0.09090909090909091,
+      "target_regressions": 0,
+      "target_recoveries": 0
     },
     {
       "round": 3,
@@ -155,10 +155,10 @@
       "verifier_lines_added": 267,
       "verifier_lines_removed": 309,
       "active_cases": 32,
-      "introduced_cases": 0,
-      "retired_cases": 2,
-      "retained_cases": 32,
-      "case_churn_rate": 0.058823529411764705,
+      "introduced_cases": 27,
+      "retired_cases": 29,
+      "retained_cases": 5,
+      "case_churn_rate": 0.9180327868852459,
       "active_requirements": 14,
       "introduced_requirements": 6,
       "retired_requirements": 3,
@@ -180,9 +180,9 @@
       "target_case_success": 3,
       "target_case_total": 32,
       "target_case_ratio": 0.09375,
-      "target_new_success_rate": null,
-      "target_regressions": 3,
-      "target_recoveries": 2
+      "target_new_success_rate": 0.07407407407407407,
+      "target_regressions": 0,
+      "target_recoveries": 0
     },
     {
       "round": 4,
@@ -193,10 +193,10 @@
       "verifier_lines_added": 303,
       "verifier_lines_removed": 369,
       "active_cases": 31,
-      "introduced_cases": 0,
-      "retired_cases": 1,
-      "retained_cases": 31,
-      "case_churn_rate": 0.03125,
+      "introduced_cases": 26,
+      "retired_cases": 27,
+      "retained_cases": 5,
+      "case_churn_rate": 0.9137931034482759,
       "active_requirements": 12,
       "introduced_requirements": 5,
       "retired_requirements": 7,
@@ -218,9 +218,9 @@
       "target_case_success": 7,
       "target_case_total": 31,
       "target_case_ratio": 0.22580645161290322,
-      "target_new_success_rate": null,
-      "target_regressions": 1,
-      "target_recoveries": 5
+      "target_new_success_rate": 0.19230769230769232,
+      "target_regressions": 0,
+      "target_recoveries": 0
     },
     {
       "round": 5,
@@ -231,10 +231,10 @@
       "verifier_lines_added": 419,
       "verifier_lines_removed": 295,
       "active_cases": 32,
-      "introduced_cases": 1,
-      "retired_cases": 0,
-      "retained_cases": 31,
-      "case_churn_rate": 0.03125,
+      "introduced_cases": 29,
+      "retired_cases": 28,
+      "retained_cases": 3,
+      "case_churn_rate": 0.95,
       "active_requirements": 13,
       "introduced_requirements": 8,
       "retired_requirements": 7,
@@ -256,9 +256,9 @@
       "target_case_success": 5,
       "target_case_total": 32,
       "target_case_ratio": 0.15625,
-      "target_new_success_rate": 0.0,
-      "target_regressions": 5,
-      "target_recoveries": 3
+      "target_new_success_rate": 0.13793103448275862,
+      "target_regressions": 0,
+      "target_recoveries": 0
     },
     {
       "round": 6,
@@ -269,10 +269,10 @@
       "verifier_lines_added": 172,
       "verifier_lines_removed": 411,
       "active_cases": 27,
-      "introduced_cases": 0,
-      "retired_cases": 5,
-      "retained_cases": 27,
-      "case_churn_rate": 0.15625,
+      "introduced_cases": 26,
+      "retired_cases": 31,
+      "retained_cases": 1,
+      "case_churn_rate": 0.9827586206896551,
       "active_requirements": 8,
       "introduced_requirements": 5,
       "retired_requirements": 10,
@@ -294,8 +294,8 @@
       "target_case_success": 2,
       "target_case_total": 27,
       "target_case_ratio": 0.07407407407407407,
-      "target_new_success_rate": null,
-      "target_regressions": 3,
+      "target_new_success_rate": 0.038461538461538464,
+      "target_regressions": 0,
       "target_recoveries": 0
     },
     {
@@ -307,10 +307,10 @@
       "verifier_lines_added": 176,
       "verifier_lines_removed": 166,
       "active_cases": 22,
-      "introduced_cases": 0,
-      "retired_cases": 5,
-      "retained_cases": 22,
-      "case_churn_rate": 0.18518518518518517,
+      "introduced_cases": 21,
+      "retired_cases": 26,
+      "retained_cases": 1,
+      "case_churn_rate": 0.9791666666666666,
       "active_requirements": 8,
       "introduced_requirements": 5,
       "retired_requirements": 5,
@@ -332,9 +332,9 @@
       "target_case_success": 2,
       "target_case_total": 22,
       "target_case_ratio": 0.09090909090909091,
-      "target_new_success_rate": null,
+      "target_new_success_rate": 0.047619047619047616,
       "target_regressions": 0,
-      "target_recoveries": 1
+      "target_recoveries": 0
     },
     {
       "round": 8,
@@ -345,10 +345,10 @@
       "verifier_lines_added": 361,
       "verifier_lines_removed": 196,
       "active_cases": 38,
-      "introduced_cases": 16,
-      "retired_cases": 0,
-      "retained_cases": 22,
-      "case_churn_rate": 0.42105263157894735,
+      "introduced_cases": 35,
+      "retired_cases": 19,
+      "retained_cases": 3,
+      "case_churn_rate": 0.9473684210526315,
       "active_requirements": 13,
       "introduced_requirements": 9,
       "retired_requirements": 4,
@@ -370,9 +370,9 @@
       "target_case_success": 7,
       "target_case_total": 38,
       "target_case_ratio": 0.18421052631578946,
-      "target_new_success_rate": 0.125,
-      "target_regressions": 1,
-      "target_recoveries": 4
+      "target_new_success_rate": 0.14285714285714285,
+      "target_regressions": 0,
+      "target_recoveries": 0
     },
     {
       "round": 9,
@@ -383,10 +383,10 @@
       "verifier_lines_added": 283,
       "verifier_lines_removed": 324,
       "active_cases": 34,
-      "introduced_cases": 0,
-      "retired_cases": 4,
-      "retained_cases": 34,
-      "case_churn_rate": 0.10526315789473684,
+      "introduced_cases": 28,
+      "retired_cases": 32,
+      "retained_cases": 6,
+      "case_churn_rate": 0.9090909090909091,
       "active_requirements": 11,
       "introduced_requirements": 3,
       "retired_requirements": 5,
@@ -408,9 +408,9 @@
       "target_case_success": 5,
       "target_case_total": 34,
       "target_case_ratio": 0.14705882352941177,
-      "target_new_success_rate": null,
-      "target_regressions": 3,
-      "target_recoveries": 2
+      "target_new_success_rate": 0.10714285714285714,
+      "target_regressions": 0,
+      "target_recoveries": 0
     }
   ]
 }

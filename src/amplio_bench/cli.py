@@ -6,7 +6,10 @@ from pathlib import Path
 
 from .audit import audit_run, write_audit
 from .case_metrics import analyze_run, write_analysis
+from .failure_analysis import analyze_failures, write_failure_analysis
+from .agent_metrics import analyze_agent_events, write_agent_metrics
 from .difficulty import adaptation_difficulty, write_difficulty
+from .diagnostics import diagnose_run, write_diagnostics
 from .provenance import build_manifest, write_manifest
 from .runner import run_evocode
 from .secrets import scan_tree
@@ -51,6 +54,29 @@ def build_parser() -> argparse.ArgumentParser:
     command.add_argument("--out", type=Path, required=True)
     command.add_argument("--model", required=True)
     command.add_argument("--dry-run", action="store_true")
+
+    command = sub.add_parser(
+        "diagnose-run",
+        help="Join verifier failure modes with Amplio harness telemetry.",
+    )
+    command.add_argument("--run-dir", type=Path, required=True)
+    command.add_argument("--panel-json", type=Path)
+    command.add_argument("--out-dir", type=Path, required=True)
+
+    command = sub.add_parser(
+        "analyze-failures",
+        help="Decompose verifier failures and compare them with a released panel.",
+    )
+    command.add_argument("--run-dir", type=Path, required=True)
+    command.add_argument("--panel-json", type=Path)
+    command.add_argument("--out-dir", type=Path, required=True)
+
+    command = sub.add_parser(
+        "analyze-agent-events",
+        help="Analyze deduplicated Amplio event/subagent telemetry.",
+    )
+    command.add_argument("--run-dir", type=Path, required=True)
+    command.add_argument("--out-dir", type=Path, required=True)
 
     command = sub.add_parser(
         "analyze-difficulty",
@@ -101,6 +127,28 @@ def main() -> None:
                 args.dry_run,
             )
         )
+
+    if args.cmd == "diagnose-run":
+        result = diagnose_run(args.run_dir, args.panel_json)
+        write_diagnostics(result, args.out_dir)
+        print(json.dumps({
+            "run_dir": result["run_dir"],
+            "resolved_briefings": result["resolved_briefings"],
+            "rounds": result["rounds"],
+        }, indent=2))
+        return
+
+    if args.cmd == "analyze-failures":
+        result = analyze_failures(args.run_dir, args.panel_json)
+        write_failure_analysis(result, args.out_dir)
+        print(json.dumps(result, indent=2))
+        return
+
+    if args.cmd == "analyze-agent-events":
+        result = analyze_agent_events(args.run_dir)
+        write_agent_metrics(result, args.out_dir)
+        print(json.dumps(result, indent=2))
+        return
 
     if args.cmd == "analyze-difficulty":
         result = adaptation_difficulty(

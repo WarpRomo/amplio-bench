@@ -11,7 +11,11 @@ import math
 import re
 import tomllib
 
-from .case_metrics import discover_round_files, parse_verifier_stdout
+from .case_metrics import (
+    discover_round_files,
+    index_cases_by_stable_key,
+    parse_verifier_stdout,
+)
 
 
 @dataclass(frozen=True)
@@ -148,7 +152,8 @@ def structural_rounds(task_dir: Path, run_dir: Path | None = None) -> list[Struc
         churn = None
         active_req = introduced_req = retired_req = None
         if cases is not None:
-            cur_ids = set(cases)
+            cur_stable = index_cases_by_stable_key(cases)
+            cur_ids = set(cur_stable)
             cur_req = {c.requirement for c in cases.values() if c.requirement}
             active_cases = len(cur_ids)
             active_req = len(cur_req)
@@ -160,7 +165,7 @@ def structural_rounds(task_dir: Path, run_dir: Path | None = None) -> list[Struc
                 retired_req = 0
                 churn = 1.0 if cur_ids else 0.0
             else:
-                prev_ids = set(prev_cases)
+                prev_ids = set(index_cases_by_stable_key(prev_cases))
                 introduced_ids = cur_ids - prev_ids
                 retired_ids = prev_ids - cur_ids
                 retained_ids = cur_ids & prev_ids

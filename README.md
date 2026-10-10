@@ -16,6 +16,8 @@ The harness reports interpretable trajectory-level signals instead of collapsing
 - final per-requirement performance
 - structural adaptation descriptors
 - released-panel adaptation difficulty
+- exact failure-source decomposition and released-panel case comparison
+- deduplicated token/tool/compaction telemetry and subagent coordination signals
 - run validity, provenance, and secret hygiene
 
 For difficulty analysis, structural change, released-panel difficulty, and the target agent's observed sequential outcome are intentionally kept as separate axes.
@@ -88,7 +90,7 @@ Outputs:
 - `final_requirements.csv`
 - `summary.md`
 
-Transition metrics use stable verifier case IDs to distinguish newly introduced cases, retired cases, regressions, recoveries, and retained behavior.
+Transition metrics use stable semantic verifier-case identity to distinguish newly introduced cases, retired cases, regressions, recoveries, and retained behavior. EvoCode's per-round ordinal `case_id` values are not treated as cross-round identities; the analyzer uses the canonical `scenario` field for trajectory matching.
 
 ## Analyze adaptation difficulty
 
@@ -112,6 +114,34 @@ The primary fine-grained panel calibration uses each model-round's case-completi
 These are **descriptive sequential-panel difficulty measures**, not intrinsic isolated-round difficulty. The recommended causal control is an oracle-prefix isolated-round evaluation with the same target agent.
 
 See [`docs/ADAPTATION_DIFFICULTY.md`](docs/ADAPTATION_DIFFICULTY.md).
+
+Optional Amplio-native per-run briefings can also be selected in the run config for controlled harness experiments; the baseline uses none.
+
+## Diagnose failure modes and harness behavior
+
+A completed run can be analyzed without another model call:
+
+```bash
+amplio-bench diagnose-run \
+  --run-dir /path/to/run \
+  --panel-json /path/to/evocode-task-result.json \
+  --out-dir /path/to/diagnostics
+```
+
+The report aligns exact verifier failure sources (unresolved inherited failures,
+regressions, and misses on newly introduced cases) with deduplicated Amplio
+harness telemetry such as tokens, tool errors, compactions, subagent activity,
+and inter-agent messages. It also compares target case failures with the released
+EvoCode panel to distinguish benchmark-common weaknesses from stronger
+target/scaffold/trajectory-specific candidates. These remain separate observable
+axes rather than a weighted failure score.
+
+The runner also supports optional Amplio-native per-run briefings for controlled
+harness A/B experiments. The baseline uses none; configured briefing names are
+validated against the selected Amplio binary before execution and recorded in
+run provenance.
+
+See [`docs/FAILURE_DIAGNOSTICS.md`](docs/FAILURE_DIAGNOSTICS.md).
 
 ## Reference results
 
